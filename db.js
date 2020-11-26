@@ -1,6 +1,8 @@
-// pg-promise Setup
-const pgp = require("pg-promise")(); // import pg-promise
-const connectionString = "postgresql://postgres:1973@localhost:5432/maxelecdb"; // URL where Postgres is running
-const db = pgp(connectionString); // Connected db instance
+const { DB_NAME, PG_USER, PG_PASSWORD, PG_PORT } = require("./config/config");
+const connectionString = `postgresql://${PG_USER}:${PG_PASSWORD}@localhost:${PG_PORT}/${DB_NAME}`; // URL where Postgres is running
+const pgp = require("pg-promise")();
+const db = pgp(connectionString);
 
-module.exports = { pgp, db };
+console.log(connectionString)
+
+module.exports = { db };
