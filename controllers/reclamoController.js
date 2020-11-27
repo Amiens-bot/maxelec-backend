@@ -291,7 +291,32 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
         );
       }
 
-      t.batch([queryPersona]);
+      const crearClienteFinal = t.none(
+        `INSERT INTO cliente_final(dni) VALUES ($1)`,
+        persona.dni,
+      );
+
+      const crearTicket = t.none(
+        `
+        INSERT INTO ticket(razon, fecha_ingreso, estado, dni_cliente_final, dni_empleado, numero_serie)
+        VALUES($<razon>, $<fecha_ingreso>, 'DERIVADO', $<dni_cliente_final>, $<dni_empleado>, $<numero_serie>);
+
+        INSERT INTO Reclamo(ticket_id, cuit_empresa_tecnico) VALUES ((SELECT ticket_id_seq.last_value FROM ticket_id_seq), $<cuit_empresa_tecnico>);
+      `,
+        { ...reclamo, dni_cliente_final: persona.dni },
+      );
+
+      const actualizarFactura = t.none(
+        `UPDATE factura_final SET dni = $1 WHERE numero_factura = $2 `,
+        [persona.dni, reclamo.numero_factura_final],
+      );
+
+      t.batch([
+        queryPersona,
+        crearClienteFinal,
+        crearTicket,
+        actualizarFactura,
+      ]);
     })
     .then((result) => console.log('hola'))
     .catch((err) => console.error('chau'));
