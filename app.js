@@ -16,6 +16,6 @@ app.use(express.json());
 // Routers
 app.use('/api/ciudades', ciudadesRouter);
 app.use('/api/tecnicosexternos', tecnicosExternosRouter);
-app.use('/api/reclamo', reclamoRouter);
+app.use('/api/reclamos', reclamoRouter);
 
 module.exports = app;

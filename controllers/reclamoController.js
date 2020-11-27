@@ -46,3 +46,50 @@ exports.getOverview = (dbConnection) => async (req, res) => {
     payload,
   });
 };
+
+exports.getReclamosPendientes = (dbConnection) => async (req, res) => {
+  const { cuit } = req.params;
+
+  const sqlQuery = `
+        SELECT p.dni, p.nombre, p.apellido, p.telefono, p.direccion, c.nombre AS "ciudad", c.provincia, t.id AS "ticket_id",
+        t.fecha_ingreso AS "fecha_reclamo", t.razon, prod.nombre AS "nombre_producto", prod.modelo, ejem.numero_serie,
+        ff.cuit AS "cuit_dist", negocio.nombre AS "casa",ff.fecha_expedicion, ff.numero_factura, t.fecha_ingreso > ff.fecha_expedicion + prod.meses_garantia * INTERVAL '1 MONTH'
+        FROM persona AS p
+        INNER JOIN ciudad AS c
+        ON p.ciudad_id = c.id
+        INNER JOIN cliente_final AS cf
+        ON p.dni = cf.dni
+        INNER JOIN ticket AS t
+        ON t.dni_cliente_final = cf.dni
+        INNER JOIN reclamo AS r
+        ON r.ticket_id = t.id
+        INNER JOIN ejemplar AS ejem
+        ON ejem.numero_serie = t.numero_serie
+        INNER JOIN producto AS prod
+        ON prod.id = ejem.producto_id
+        INNER JOIN factura_final AS ff
+        ON ff.numero_factura = ejem.numero_factura_final
+        INNER JOIN distribuidora as dist
+        ON dist.cuit = ff.cuit
+        INNER JOIN negocio
+        ON dist.cuit = negocio.cuit
+        INNER JOIN empresa_tecnico AS et
+        ON r.cuit_empresa_tecnico = et.cuit
+        WHERE t.estado = 'DERIVADOTE' AND et.cuit=$1
+    `;
+
+  const payload = await dbConnection.any(sqlQuery, cuit);
+
+  if (_.isEmpty(payload)) {
+    return res.status(404).send({
+      error: true,
+      message: 'No se encontro informacion con el cuit proporcionado.',
+    });
+  }
+
+  res.status(200).send({
+    success: true,
+    message: 'Datos encontdados con el cuit proporcionado!.',
+    payload,
+  });
+};

@@ -4,6 +4,8 @@
     <list default="true" id="6d1bb643-38a7-47c2-8a2a-d5901b9f69c1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/reclamoController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/reclamoController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/reclamoRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/reclamoRouter.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +63,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606433890553</updated>
       <workItem from="1606433891738" duration="2252000" />
-      <workItem from="1606436632582" duration="10146000" />
+      <workItem from="1606436632582" duration="10969000" />
     </task>
     <servers />
   </component>
