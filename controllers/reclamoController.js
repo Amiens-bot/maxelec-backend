@@ -1,5 +1,6 @@
 require(`express-async-errors`);
 const _ = require(`lodash`);
+const moment = require('moment');
 
 exports.getOverview = (dbConnection) => async (req, res) => {
   const {
