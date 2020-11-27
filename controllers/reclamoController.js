@@ -53,7 +53,7 @@ exports.getReclamosPendientes = (dbConnection) => async (req, res) => {
   const sqlQuery = `
         SELECT p.dni, p.nombre, p.apellido, p.telefono, p.direccion, c.nombre AS "ciudad", c.provincia, t.id AS "ticket_id",
         t.fecha_ingreso AS "fecha_reclamo", t.razon, prod.nombre AS "nombre_producto", prod.modelo, ejem.numero_serie,
-        ff.cuit AS "cuit_dist", negocio.nombre AS "casa",ff.fecha_expedicion, ff.numero_factura, t.fecha_ingreso > ff.fecha_expedicion + prod.meses_garantia * INTERVAL '1 MONTH'
+        ff.cuit AS "cuit_dist", negocio.nombre AS "casa",ff.fecha_expedicion, ff.numero_factura, (t.fecha_ingreso > ff.fecha_expedicion + prod.meses_garantia * INTERVAL '1 MONTH') as garantiaExpirada
         FROM persona AS p
         INNER JOIN ciudad AS c
         ON p.ciudad_id = c.id
