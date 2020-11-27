@@ -19,6 +19,8 @@
     "pg-promise": "^10.8.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "eslint": "^7.14.0",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.0"
   }
 }
