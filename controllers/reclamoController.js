@@ -248,7 +248,6 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
       });
     });
 };
-//gaston estuvo aqui
 exports.reparar = (dbConnection) => async (req, res) => {
   const {
     ticket_id: id,

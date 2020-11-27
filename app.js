@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const ciudadesRouter = require('./routes/ciudadesRouter');
 const tecnicosExternosRouter = require('./routes/tecnicosExternosRouter');
 const reclamoRouter = require('./routes/reclamoRouter');
+const empleadoRouter = require('./routes/empleadoRouter');
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use(express.json());
 app.use('/api/ciudades', ciudadesRouter);
 app.use('/api/tecnicosexternos', tecnicosExternosRouter);
 app.use('/api/reclamos', reclamoRouter);
+app.use('/api/empleados', empleadoRouter);
 
 module.exports = app;

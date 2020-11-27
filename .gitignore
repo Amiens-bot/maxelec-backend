@@ -116,5 +116,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-#webStorm
 .idea
