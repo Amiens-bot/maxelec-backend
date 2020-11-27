@@ -163,3 +163,88 @@ exports.getReclamosEnGestion = (dbConnection) => async (req, res) => {
     payload: newPayload,
   });
 };
+
+// req.body: {
+//   persona: {
+//     dni: 37666666,
+//     nombre: 'mauricio',
+//     apellido: 'benitez',
+//     telefono: '5493423123',
+//     direccion: 'xd'
+//   },
+//   reclamo: {
+//      razon: 'una razon',
+//      solucion: 'una solucion',
+//      fecha_ingreso: '1995-08-12',
+//      fecha_solucion: '1995-08-13',
+//      estado: 'SOLUCIONADO',
+//      dni_empleado: 1231231232
+//   }
+// }
+
+exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
+  const { persona, reclamo } = req.body;
+
+  const personasDni = await dbConnection.any(
+    `
+    SELECT dni FROM persona WHERE true
+  `,
+  );
+
+  dbConnection
+    .tx((t) => {
+      // crea persona y devulve el dni creado
+
+      let queryPersona;
+      if (!personasDni.includes(persona.dni)) {
+        queryPersona = t.one(
+          `
+        INSERT INTO persona(dni, nombre, apellido, direccion, telefono)
+        VALUES ($<dni>, $<nombre>, $<apellido>, $<direccion>, $<telefono>)
+        RETURNING dni
+      `,
+          { ...persona },
+        );
+      } else {
+        queryPersona = t.one(
+          `SELECT dni FROM persona WHERE persona.dni = $1`,
+          persona.dni,
+        );
+      }
+
+      const crearClienteFinal = t.none(
+        `INSERT INTO cliente_final(dni) VALUES ($1)`,
+        persona.dni,
+      );
+
+      const crearTicket = t.none(
+        `
+        INSERT INTO ticket(razon, descripcion_solucion, fecha_ingreso, fecha_solucion, estado, dni_empleado)
+        VALUES($<razon>, $<solucion>, $<fecha_ingreso>, $<fecha_solucion>, 'SOLUCIONADO', $<dni_empleado>)
+      `,
+        { ...reclamo },
+      );
+
+      // const crearReclamo = t.none(
+      //   `
+      //   INSERT INTO reclamo()
+      //   VALUES()
+      //   `,
+      //   reclamo,
+      // );
+
+      return t.batch([queryPersona, crearClienteFinal, crearTicket]);
+    })
+    .then((success) => {
+      res.status(201).send({
+        success: true,
+        message: `Reclamo creado exitosamente.`,
+      });
+    })
+    .catch((err) => {
+      res.status(400).send({
+        error: true,
+        message: `Failed execution: ${err.message}`,
+      });
+    });
+};
