@@ -267,3 +267,22 @@ exports.reparar = (dbConnection) => async (req, res) => {
     message: 'Actualizacion con exito, Reparar',
   });
 };
+
+exports.finalizar = (dbConnection) => async (req, res) => {
+  const {
+    ticket_id: id,
+    descripcion_solucion: descSolucion
+  } = req.query;
+
+  const sqlQueryTicketUpdate = `
+    UPDATE ticket
+      SET estado = 'SOLUCIONADO', descripcion_solucion = $1
+        WHERE ticket.id = $2`;
+
+  await dbConnection.query(sqlQueryTicketUpdate, [descSolucion, id])
+
+  res.status(200).json({
+    success: true,
+    message: 'Finalizado con exito'
+  })
+};
