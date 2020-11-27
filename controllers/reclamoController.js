@@ -81,15 +81,15 @@ exports.getReclamosPendientes = (dbConnection) => async (req, res) => {
   const payload = await dbConnection.any(sqlQuery, cuit);
   const { fecha_expedicion, fecha_reclamo } = payload;
 
-  payload.fecha_expedicion = moment(fecha_expedicion).format('YYYY-MM-DD');
-  payload.fecha_reclamo = moment(fecha_reclamo).format('YYYY-MM-DD');
-
   if (_.isEmpty(payload)) {
     return res.status(404).send({
       error: true,
       message: 'No se encontro informacion con el cuit proporcionado.',
     });
   }
+
+  payload.fecha_expedicion = moment(fecha_expedicion).format('YYYY-MM-DD');
+  payload.fecha_reclamo = moment(fecha_reclamo).format('YYYY-MM-DD');
 
   res.status(200).send({
     success: true,
