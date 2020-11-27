@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // conexion a db
-const { db } = require("../db");
+const { db } = require("../model/db");
 
 // Endpoint -> para conseguir todas las ciudades.
 router.get("/", (req, res) => {

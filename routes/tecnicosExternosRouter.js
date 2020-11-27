@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // conexion a db
-const { db } = require("../db");
+const { db } = require("../model/db");
 
 // Endpoint -> para conseguir todos los tecnicos que atienden a la ciudad elegida
 router.get("/:ciudad", (req, res) => {

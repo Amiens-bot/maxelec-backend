@@ -1,32 +1,19 @@
 const express = require("express");
 const cors = require("cors");
+const { APP_PORT: PORT } = require('./utils/config');
+const ciudadesRouter = require("./routes/ciudadesRouter");
+const tecnicosExternosRouter = require("./routes/tecnicosExternosRouter");
 
 const app = express();
-const PORT = 5000;
 
+// Utils
 app.use(cors());
-
-app.use(
-  express.urlencoded({
-    extended: false,
-  })
-);
-
 app.use(express.json());
 
 // Routers
-// ciudades-provincia
-const ciudadesRouter = require("./routes/ciudadesRouter");
-app.use("/ciudades", ciudadesRouter);
-
-// tecnicos externos
-const tecnicosExternosRouter = require("./routes/tecnicosExternosRouter");
-app.use("/tecnicosexternos", tecnicosExternosRouter);
-
-app.use("/", (req, res) => {
-  res.send("Welcome to My server");
-});
+app.use("/api/ciudades", ciudadesRouter);
+app.use("/api/tecnicosexternos", tecnicosExternosRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server running at port ${PORT}`);
+  console.debug(`Server running on ${PORT}`);
 });
