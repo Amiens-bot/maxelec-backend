@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const morgan = require('morgan');
 const ciudadesRouter = require("./routes/ciudadesRouter");
 const tecnicosExternosRouter = require("./routes/tecnicosExternosRouter");
 
 const app = express();
+
+app.use(morgan('dev'));
 
 // Utils
 app.use(cors());
