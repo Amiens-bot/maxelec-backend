@@ -10,4 +10,8 @@ router
   .route('/pendientes/:cuit')
   .get(reclamoController.getReclamosPendientes(db));
 
+router
+  .route('/engestion/:cuit')
+  .get(reclamoController.getReclamosEnGestion(db));
+
 module.exports = router;
