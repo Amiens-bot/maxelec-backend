@@ -318,8 +318,18 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
         actualizarFactura,
       ]);
     })
-    .then((result) => console.log('hola'))
-    .catch((err) => console.error('chau'));
+    .then((success) => {
+      res.status(200).send({
+        success: true,
+        message: 'Reclamo derivado exitosamente.',
+      });
+    })
+    .catch((err) => {
+      res.status(400).send({
+        error: true,
+        message: `Failed execution: ${err.message}`,
+      });
+    });
 };
 
 exports.reparar = (dbConnection) => async (req, res) => {
