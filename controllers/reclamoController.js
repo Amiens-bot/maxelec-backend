@@ -89,8 +89,14 @@ exports.getReclamosPendientes = (dbConnection) => async (req, res) => {
     });
   }
 
-  payload.fecha_expedicion = moment(fecha_expedicion).format('YYYY-MM-DD');
-  payload.fecha_reclamo = moment(fecha_reclamo).format('YYYY-MM-DD');
+  const newExpedicion = moment(fecha_expedicion).format('YYYY-MM-DD');
+  const newReclamo = moment(fecha_reclamo).format('YYYY-MM-DD');
+
+  const newPayload = {
+    ...payload,
+    fecha_reclamo: newReclamo,
+    fecha_expedicion: newExpedicion,
+  };
 
   res.status(200).send({
     success: true,

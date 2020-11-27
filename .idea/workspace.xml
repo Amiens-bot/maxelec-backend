@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d1bb643-38a7-47c2-8a2a-d5901b9f69c1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7b26f7f8-745e-424f-b00a-4ca6209cf80b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7b26f7f8-745e-424f-b00a-4ca6209cf80b.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7b26f7f8-745e-424f-b00a-4ca6209cf80b/storage_v2/_src_/database/maxelecdb.J9Xb-w/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7b26f7f8-745e-424f-b00a-4ca6209cf80b/storage_v2/_src_/database/maxelecdb.J9Xb-w/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/reclamoController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/reclamoController.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +62,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606433890553</updated>
       <workItem from="1606433891738" duration="2252000" />
-      <workItem from="1606436632582" duration="12048000" />
+      <workItem from="1606436632582" duration="12288000" />
     </task>
     <servers />
   </component>
