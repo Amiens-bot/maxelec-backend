@@ -101,6 +101,6 @@ exports.getReclamosPendientes = (dbConnection) => async (req, res) => {
   res.status(200).send({
     success: true,
     message: 'Datos encontdados con el cuit proporcionado!.',
-    payload,
+    payload: newPayload,
   });
 };
