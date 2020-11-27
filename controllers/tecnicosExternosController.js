@@ -3,8 +3,7 @@ const _ = require('lodash');
 
 exports.getByCiudad = (dbConnection) => async (req, res) => {
   const { ciudad: ciudadId } = req.params;
-  const sqlQuery =
-    `
+  const sqlQuery = `
     SELECT et.cuit, et.id, n.nombre, n.direccion, c.nombre AS "Ciudad", c.provincia
     FROM negocio AS n
     INNER JOIN ciudad AS c
@@ -21,13 +20,39 @@ exports.getByCiudad = (dbConnection) => async (req, res) => {
   if (_.isEmpty(payload)) {
     return res.status(404).json({
       error: true,
-      message: "Error, no se pudo encontrar ningun tecnico externo. en la base de datos."
+      message:
+        'Error, no se pudo encontrar ningun tecnico externo. en la base de datos.',
     });
   }
 
   res.status(200).json({
     payload,
     success: true,
-    msg: "Tecnicos externos encontrados..."
-  })
+    msg: 'Tecnicos externos encontrados...',
+  });
+};
+
+exports.empresaTecnicos = (dbConnection) => async (req, res) => {
+  const { cuit } = req.params;
+
+  const sqlQuery = `
+    SELECT id, dni
+        FROM tecnico_externo
+            WHERE cuit_empresa_tecnico = $1`;
+
+  const payload = await dbConnection.query(sqlQuery, cuit);
+
+  if (_.isEmpty(payload)) {
+    return res.status(404).json({
+      error: true,
+      message:
+        'Error no hay tecnicos externos para ese CUIT. Datos no encontrados.',
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Datos recuperados exitoxamente.',
+    payload: payload,
+  });
 };

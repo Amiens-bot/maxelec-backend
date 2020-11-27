@@ -19,4 +19,7 @@ router
 // example endpoint: /api/reclamos/derivados
 router.route('/derivados').post(reclamoController.crearReclamoDerivado(db));
 
+//example endpoint: /api/reclamos/reparar
+router.route('/reparar').post(reclamoController.reparar(db));
+
 module.exports = router;
