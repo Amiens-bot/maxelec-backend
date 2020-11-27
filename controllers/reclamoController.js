@@ -182,21 +182,23 @@ exports.getReclamosEnGestion = (dbConnection) => async (req, res) => {
 //   }
 // }
 
-exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
+exports.crearReclamoSolucionado = (dbConnection) => async (req, res) => {
   const { persona, reclamo } = req.body;
 
-  const personasDni = await dbConnection.any(
+  const dniTotales = await dbConnection.any(
     `
     SELECT dni FROM persona WHERE true
   `,
   );
+
+  const dniCoincidentes = dniTotales.filter((obj) => obj.dni === persona.dni);
 
   dbConnection
     .tx((t) => {
       // crea persona y devulve el dni creado
 
       let queryPersona;
-      if (!personasDni.includes(persona.dni)) {
+      if (!dniCoincidentes.length) {
         queryPersona = t.one(
           `
         INSERT INTO persona(dni, nombre, apellido, direccion, telefono)
@@ -242,6 +244,59 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
       });
     });
 };
+
+// body = {
+//   persona: {
+//     dni,
+//     nombre,
+//     apellido,
+//     telefono,
+//     direccion,
+//     ciudad
+//   },
+//   reclamo: {
+//     razon,
+//     fecha_ingreso,
+//     dni_empleado,
+//     numero_serie,
+//     numero_factura_final,
+//     cuit_empresa_tecnico
+//   }
+// }
+
+exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
+  const { persona, reclamo } = req.body;
+
+  const dniTotales = await dbConnection.any(
+    'SELECT dni FROM persona WHERE true',
+  );
+
+  const dniCoincidentes = dniTotales.filter((obj) => obj.dni === persona.dni);
+
+  dbConnection
+    .tx((t) => {
+      let queryPersona;
+      if (!dniCoincidentes.length) {
+        queryPersona = t.one(
+          `
+          INSERT INTO persona(dni, nombre, apellido, telefono, direccion, ciudad_id)
+          VALUES ($<dni>, $<nombre>, $<apellido>, $<telefono>, $<direccion>, $<ciudad>)
+        `,
+          { ...persona },
+        );
+      } else {
+        queryPersona = t.one(
+          `SELECT dni FROM persona WHERE persona.dni = $1`,
+          persona.dni,
+        );
+      }
+
+      t.batch([queryPersona]);
+    })
+    .then((result) => console.log('hola'))
+    .catch((err) => console.error('chau'));
+};
+
 exports.reparar = (dbConnection) => async (req, res) => {
   const {
     ticket_id: id,
@@ -269,20 +324,17 @@ exports.reparar = (dbConnection) => async (req, res) => {
 };
 
 exports.finalizar = (dbConnection) => async (req, res) => {
-  const {
-    ticket_id: id,
-    descripcion_solucion: descSolucion
-  } = req.query;
+  const { ticket_id: id, descripcion_solucion: descSolucion } = req.query;
 
   const sqlQueryTicketUpdate = `
     UPDATE ticket
       SET estado = 'SOLUCIONADO', descripcion_solucion = $1
         WHERE ticket.id = $2`;
 
-  await dbConnection.query(sqlQueryTicketUpdate, [descSolucion, id])
+  await dbConnection.query(sqlQueryTicketUpdate, [descSolucion, id]);
 
   res.status(200).json({
     success: true,
-    message: 'Finalizado con exito'
-  })
+    message: 'Finalizado con exito',
+  });
 };

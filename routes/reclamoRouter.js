@@ -16,7 +16,13 @@ router
   .route('/engestion/:cuit')
   .get(reclamoController.getReclamosEnGestion(db));
 
+// example endpoint: /api/reclamos/solucionados
+router
+  .route('/solucionados')
+  .post(reclamoController.crearReclamoSolucionado(db));
+
 // example endpoint: /api/reclamos/derivados
+
 router.route('/derivados').post(reclamoController.crearReclamoDerivado(db));
 
 //example endpoint: /api/reclamos/reparar
