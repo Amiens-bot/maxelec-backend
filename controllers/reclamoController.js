@@ -32,7 +32,7 @@ exports.getOverview = (dbConnection) => async (req, res) => {
   ]);
 
   if (_.isEmpty(payload)) {
-    res.status(404).send({
+    return res.status(404).send({
       error: true,
       message: `No se pudo encontrar informacion con los datos proporcionados:\n
       numero_de_factura: ${numeroDeFactura} - numero_de_serie: ${numeroDeSerie}
