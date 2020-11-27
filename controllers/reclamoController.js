@@ -188,7 +188,7 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
   const personasDni = await dbConnection.any(
     `
     SELECT dni FROM persona WHERE true
-  `,
+  `
   );
 
   dbConnection
@@ -203,18 +203,18 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
         VALUES ($<dni>, $<nombre>, $<apellido>, $<direccion>, $<telefono>)
         RETURNING dni
       `,
-          { ...persona },
+          { ...persona }
         );
       } else {
         queryPersona = t.one(
           `SELECT dni FROM persona WHERE persona.dni = $1`,
-          persona.dni,
+          persona.dni
         );
       }
 
       const crearClienteFinal = t.none(
         `INSERT INTO cliente_final(dni) VALUES ($1)`,
-        persona.dni,
+        persona.dni
       );
 
       const crearTicket = t.none(
@@ -222,7 +222,7 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
         INSERT INTO ticket(razon, descripcion_solucion, fecha_ingreso, fecha_solucion, estado, dni_empleado)
         VALUES($<razon>, $<solucion>, $<fecha_ingreso>, $<fecha_solucion>, 'SOLUCIONADO', $<dni_empleado>)
       `,
-        { ...reclamo },
+        { ...reclamo }
       );
 
       // const crearReclamo = t.none(
@@ -247,4 +247,32 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
         message: `Failed execution: ${err.message}`,
       });
     });
+};
+
+exports.reparar = (dbConnection) => async (req, res) => {
+  const {
+    ticket_id: id,
+    dni_tecnico_externo: dniTecEx,
+    descripcion_recibo: descRecibo,
+  } = req.query;
+
+  const sqlQueryTicketUpdate = `UPDATE ticket
+        SET estado = 'GESTIONTE'
+            WHERE id = $1;`;
+
+  const sqlQueryReclamoUpdate = `UPDATE reclamo
+        SET dni_tecnico_externo = $1, descripcion_recibido = $2
+            WHERE ticket_id = $3;`;
+
+  const updateTicket = await dbConnection.query(sqlQueryTicketUpdate, id);
+  const updateReclamo = await dbConnection.query(sqlQueryReclamoUpdate, [
+    dniTecEx,
+    descRecibo,
+    id,
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: 'Actualizacion con exito, Reparar',
+  });
 };
