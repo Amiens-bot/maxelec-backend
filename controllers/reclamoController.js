@@ -12,7 +12,7 @@ exports.getOverview = (dbConnection) => async (req, res) => {
     producto.nombre as nombre_producto,
     producto.modelo as modelo_producto,
     factura_final.fecha_expedicion as Fecha_Expedicion,
-    (current_date > factura_final.fecha_expedicion + producto.meses_garantia * INTERVAL `1 MONTH`) AS garantiaExpirada,
+    (current_date > factura_final.fecha_expedicion + producto.meses_garantia * INTERVAL '1 MONTH') AS garantiaExpirada,
     negocio.nombre as negocio_nombre,
     negocio.direccion as negocio_direccion,
     ciudad.nombre as Ciudad,
@@ -36,13 +36,13 @@ exports.getOverview = (dbConnection) => async (req, res) => {
       error: true,
       message: `No se pudo encontrar informacion con los datos proporcionados:\n
       numero_de_factura: ${numeroDeFactura} - numero_de_serie: ${numeroDeSerie}
-      `
+      `,
     });
   }
 
   res.status(200).send({
     success: true,
     message: 'Informacion encontrada exitosamente.',
-    payload
-  })
+    payload,
+  });
 };
