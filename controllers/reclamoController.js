@@ -188,7 +188,7 @@ exports.crearReclamoSolucionado = (dbConnection) => async (req, res) => {
   const dniTotales = await dbConnection.any(
     `
     SELECT dni FROM persona WHERE true
-  `,
+  `
   );
 
   const dniCoincidentes = dniTotales.filter((obj) => obj.dni === persona.dni);
@@ -205,18 +205,18 @@ exports.crearReclamoSolucionado = (dbConnection) => async (req, res) => {
         VALUES ($<dni>, $<nombre>, $<apellido>, $<direccion>, $<telefono>)
         RETURNING dni
       `,
-          { ...persona },
+          { ...persona }
         );
       } else {
         queryPersona = t.one(
           `SELECT dni FROM persona WHERE persona.dni = $1`,
-          persona.dni,
+          persona.dni
         );
       }
 
       const crearClienteFinal = t.none(
         `INSERT INTO cliente_final(dni) VALUES ($1)`,
-        persona.dni,
+        persona.dni
       );
 
       const crearTicket = t.none(
@@ -226,7 +226,7 @@ exports.crearReclamoSolucionado = (dbConnection) => async (req, res) => {
 
         INSERT INTO Reclamo(ticket_id) VALUES ((SELECT ticket_id_seq.last_value FROM ticket_id_seq));
       `,
-        { ...reclamo, dni_cliente_final: persona.dni },
+        { ...reclamo, dni_cliente_final: persona.dni }
       );
 
       return t.batch([queryPersona, crearClienteFinal, crearTicket]);
@@ -268,7 +268,7 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
   const { persona, reclamo } = req.body;
 
   const dniTotales = await dbConnection.any(
-    'SELECT dni FROM persona WHERE true',
+    'SELECT dni FROM persona WHERE true'
   );
 
   const dniCoincidentes = dniTotales.filter((obj) => obj.dni === persona.dni);
@@ -282,33 +282,33 @@ exports.crearReclamoDerivado = (dbConnection) => async (req, res) => {
           INSERT INTO persona(dni, nombre, apellido, telefono, direccion, ciudad_id)
           VALUES ($<dni>, $<nombre>, $<apellido>, $<telefono>, $<direccion>, $<ciudad>)
         `,
-          { ...persona },
+          { ...persona }
         );
       } else {
         queryPersona = t.one(
           `SELECT dni FROM persona WHERE persona.dni = $1`,
-          persona.dni,
+          persona.dni
         );
       }
 
       const crearClienteFinal = t.none(
         `INSERT INTO cliente_final(dni) VALUES ($1)`,
-        persona.dni,
+        persona.dni
       );
 
       const crearTicket = t.none(
         `
         INSERT INTO ticket(razon, fecha_ingreso, estado, dni_cliente_final, dni_empleado, numero_serie)
-        VALUES($<razon>, $<fecha_ingreso>, 'DERIVADO', $<dni_cliente_final>, $<dni_empleado>, $<numero_serie>);
+        VALUES($<razon>, $<fecha_ingreso>, 'DERIVADOTE', $<dni_cliente_final>, $<dni_empleado>, $<numero_serie>);
 
         INSERT INTO Reclamo(ticket_id, cuit_empresa_tecnico) VALUES ((SELECT ticket_id_seq.last_value FROM ticket_id_seq), $<cuit_empresa_tecnico>);
       `,
-        { ...reclamo, dni_cliente_final: persona.dni },
+        { ...reclamo, dni_cliente_final: persona.dni }
       );
 
       const actualizarFactura = t.none(
         `UPDATE factura_final SET dni = $1 WHERE numero_factura = $2 `,
-        [persona.dni, reclamo.numero_factura_final],
+        [persona.dni, reclamo.numero_factura_final]
       );
 
       t.batch([
